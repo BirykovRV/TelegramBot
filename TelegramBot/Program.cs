@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types;
+using System.Diagnostics;
 
 namespace TelegramBot
 {
@@ -30,31 +31,32 @@ namespace TelegramBot
                 },
                 OnError = async (model, update) =>
                 {
-                    if (model.Args.Length != 0)
-                    {
-                        await Bot.SendTextMessageAsync(update.Message.From.Id, $"Не верное кол-во аргумантов.\nИспользуйте команду так /help");
-                    }
+                    await Bot.SendTextMessageAsync(update.Message.From.Id, $"Не верное кол-во аргумантов.\nИспользуйте команду так /help");
                 }
             });
 
-            //Commands.Add(new BotCommand
-            //{
-            //    Command = "/help",
-            //    Example = "/help",
-            //    CountArgs = 0,
-            //    Execute = async (model, update) =>
-            //    {
-            //        await Bot.SendTextMessageAsync(update.Message.From.Id, $"Список всех команд:\n" +
-            //            string.Join("\n", Commands.Select(s => s.Example)));
-            //    },
-            //    OnError = async (model, update) =>
-            //    {
-            //        if (model.Args.Length != 0)
-            //        {
-            //            await Bot.SendTextMessageAsync(update.Message.From.Id, $"Не верное кол-во аргумантов.\nИспользуйте команду так /help");
-            //        }
-            //    }
-            //});
+            Commands.Add(new BotCommand
+            {
+                Command = "/run",
+                Example = "/run [url|path]",
+                CountArgs = 1,
+                Execute = async (model, update) =>
+                {
+                    try
+                    {
+                        Process.Start(model.Args.FirstOrDefault());
+                        await Bot.SendTextMessageAsync(update.Message.From.Id, "Выполнено!");
+                    }
+                    catch (Exception)
+                    {
+                        await Bot.SendTextMessageAsync(update.Message.From.Id, $"Не верное кол-во аргумантов.\nИспользуйте команду так /run [url|path]");
+                    }
+                },
+                OnError = async (model, update) =>
+                {
+                    await Bot.SendTextMessageAsync(update.Message.From.Id, $"Не верное кол-во аргумантов.\nИспользуйте команду так /run [url|path]");
+                }
+            });
 
             RunAsync().Wait();
 
@@ -87,13 +89,16 @@ namespace TelegramBot
                         {
                             foreach (var cmd in Commands)
                             {
-                                if (cmd.Command == model.Command && cmd.CountArgs == model.Args.Length)
+                                if (cmd.Command == model.Command)
                                 {
-                                    cmd.Execute?.Invoke(model, update);
-                                }
-                                else
-                                {
-                                    cmd.OnError?.Invoke(model, update);
+                                    if (cmd.CountArgs == model.Args.Length)
+                                    {
+                                        cmd.Execute?.Invoke(model, update);
+                                    }
+                                    else
+                                    {
+                                        cmd.OnError?.Invoke(model, update);
+                                    }
                                 }
                             }
                         }
