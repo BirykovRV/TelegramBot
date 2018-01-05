@@ -58,7 +58,9 @@ namespace TelegramBot
                 }
             });
 
-            RunAsync().Wait();
+            Test().Wait();
+
+            //RunAsync().Wait();
 
             Console.ReadKey();
         }
@@ -67,52 +69,77 @@ namespace TelegramBot
         {
             await Bot.SendTextMessageAsync(AdminId, "Бот запущен");
             var offset = 0;
+
             while (true)
             {
                 var updates = await Bot.GetUpdatesAsync(offset);
-
                 foreach (var update in updates)
                 {
                     //if (update.Message.From.Id == AdminId)
                     //{
-                    if (update.Message.Type == MessageType.TextMessage && offset == 0)
-                    {                        
-                        await Bot.SendChatActionAsync(update.Message.From.Id, ChatAction.Typing);
-                        Task.Delay(1000).Wait();
-                        await Bot.SendTextMessageAsync(update.Message.From.Id, $"Привет! Я бот Papoy. Меня создал Роман Бирюков. \nДля получения списка всех команд введи /help.");
-                    }
-                    else if (update.Message.Type == MessageType.TextMessage)
+                    if (update.Message?.Type == MessageType.TextMessage && offset == 0)
                     {
-                        string text = update.Message.Text;
-                        var model = BotCommand.Parse(text);
-                        if (model != null)
+                        await Bot.SendChatActionAsync(update.Message?.From.Id, ChatAction.Typing);
+                        Task.Delay(1000).Wait();
+                        await Bot.SendTextMessageAsync(update.Message?.From.Id, $"Привет! Я бот Papoy. Меня создал Роман Бирюков. \nДля получения списка всех команд введи /help.");
+                    }
+
+                    string text = update.Message.Text;
+                    var model = BotCommand.Parse(text);
+                    if (model != null)
+                    {
+                        foreach (var cmd in Commands)
                         {
-                            foreach (var cmd in Commands)
+                            if (cmd.Command == model.Command)
                             {
-                                if (cmd.Command == model.Command)
+                                if (cmd.CountArgs == model.Args.Length)
                                 {
-                                    if (cmd.CountArgs == model.Args.Length)
-                                    {
-                                        cmd.Execute?.Invoke(model, update);
-                                    }
-                                    else
-                                    {
-                                        cmd.OnError?.Invoke(model, update);
-                                    }
+                                    cmd.Execute?.Invoke(model, update);
+                                }
+                                else
+                                {
+                                    cmd.OnError?.Invoke(model, update);
                                 }
                             }
                         }
-                        else
-                        {
-                            await Bot.SendChatActionAsync(update.Message.From.Id, ChatAction.Typing);
-                            Task.Delay(1000).Wait();
-                            await Bot.SendTextMessageAsync(update.Message.From.Id, "Это не команда.\nДля просмотра списка команд введи /help");
-                        }                        
                     }
+                    else
+                    {
+                        await Bot.SendChatActionAsync(update.Message.From.Id, ChatAction.Typing);
+                        Task.Delay(1000).Wait();
+                        await Bot.SendTextMessageAsync(update.Message.From.Id, "Это не команда.\nДля просмотра списка команд введи /help");
+                    }
+
                     //}
                     offset = update.Id + 1;
                 }
                 Task.Delay(500).Wait();
+            }
+        }
+
+        static async Task Test()
+        {
+            int offset = 0;
+
+            UpdateType[] type = { UpdateType.MessageUpdate, UpdateType.ChannelPost };
+
+            while (true)
+            {
+                var updates = await Bot.GetUpdatesAsync(offset, 100, 10, type);
+
+                foreach (var update in updates)
+                {
+                    if (update.Message != null)
+                    {
+                        int senderId = update.Message.From.Id;
+                        var chatId = update.Message.Chat.Id;
+
+                        await Bot.SendChatActionAsync(chatId, ChatAction.Typing);
+                        Task.Delay(1000).Wait();
+                        await Bot.SendTextMessageAsync(chatId, $"Ваш Id: {senderId}\nChatId = {chatId}");
+                    }
+                    offset = update.Id + 1;
+                }
             }
         }
     }

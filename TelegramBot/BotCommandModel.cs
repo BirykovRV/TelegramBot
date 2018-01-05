@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace TelegramBot
 {
+    /// <summary>
+    /// Определяет модель команды
+    /// </summary>
     class BotCommandModel
     {
         // Комманда для бота
