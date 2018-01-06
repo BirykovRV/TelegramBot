@@ -53,19 +53,16 @@ namespace TelegramBot
 
         static async Task Test()
         {
-            int offset = 0;
+            int offset = 1;
 
             UpdateType[] type = { UpdateType.MessageUpdate, UpdateType.ChannelPost };
 
             while (true)
-            {
-                var updates = await Bot.GetUpdatesAsync(offset, 100, 10, type);
+            {                
+                var updates = await Bot.GetUpdatesAsync(offset ,100, 3, type);
 
                 foreach (var update in updates)
-                {
-                    DateTime dateTimeMessage = update.Message.Date.ToUniversalTime();
-                    DateTime dateTimeNow = DateTime.Now.ToUniversalTime();
-
+                {                                        
                     if (update.Message != null)
                     {
                         int senderId = update.Message.From.Id;
