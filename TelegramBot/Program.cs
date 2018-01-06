@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types;
-using System.Diagnostics;
 
 namespace TelegramBot
 {
@@ -13,6 +11,7 @@ namespace TelegramBot
     {
         static TelegramBotClient Bot;
         static int AdminId = 332021670;
+
         static List<BotCommand> Commands = new List<BotCommand>();
 
         static void Main(string[] args)
@@ -22,99 +21,34 @@ namespace TelegramBot
             Commands.Add(new BotCommand
             {
                 Command = "/help",
-                Example = "/help",
-                CountArgs = 0,
-                Execute = async (model, update) =>
+                Execute = async (update, chatId) =>
                 {
-                    await Bot.SendTextMessageAsync(update.Message.From.Id, $"Список всех команд:\n" +
-                        string.Join("\n", Commands.Select(s => s.Example)));
+                    await Bot.SendTextMessageAsync(chatId, "Список всех команд:\n" +
+                        string.Join("\n", Commands.Select(s => s.Command)));
                 },
-                OnError = async (model, update) =>
+                OnError = async (update, chatId) =>
                 {
-                    await Bot.SendTextMessageAsync(update.Message.From.Id, $"Не верное кол-во аргумантов.\nИспользуйте команду так /help");
+                    await Bot.SendTextMessageAsync(chatId, "Не правильная команда:\n/help");
                 }
             });
 
             Commands.Add(new BotCommand
             {
-                Command = "/run",
-                Example = "/run [url|path]",
-                CountArgs = 1,
-                Execute = async (model, update) =>
+                Command = "/help@Papoy_bot",
+                Execute = async (update, chatId) =>
                 {
-                    try
-                    {
-                        Process.Start(model.Args.FirstOrDefault());
-                        await Bot.SendTextMessageAsync(update.Message.From.Id, "Выполнено!");
-                    }
-                    catch (Exception)
-                    {
-                        await Bot.SendTextMessageAsync(update.Message.From.Id, $"Не верное кол-во аргумантов.\nИспользуйте команду так /run [url|path]");
-                    }
+                    await Bot.SendTextMessageAsync(chatId, "Список всех команд:\n" +
+                        string.Join("\n", Commands.Select(s => s.Command)));
                 },
-                OnError = async (model, update) =>
+                OnError = async (update, chatId) =>
                 {
-                    await Bot.SendTextMessageAsync(update.Message.From.Id, $"Не верное кол-во аргумантов.\nИспользуйте команду так /run [url|path]");
+                    await Bot.SendTextMessageAsync(chatId, "Не правильная команда:\n/help@Papoy_bot");
                 }
             });
 
             Test().Wait();
 
-            //RunAsync().Wait();
-
             Console.ReadKey();
-        }
-
-        static async Task RunAsync()
-        {
-            await Bot.SendTextMessageAsync(AdminId, "Бот запущен");
-            var offset = 0;
-
-            while (true)
-            {
-                var updates = await Bot.GetUpdatesAsync(offset);
-                foreach (var update in updates)
-                {
-                    //if (update.Message.From.Id == AdminId)
-                    //{
-                    if (update.Message?.Type == MessageType.TextMessage && offset == 0)
-                    {
-                        await Bot.SendChatActionAsync(update.Message?.From.Id, ChatAction.Typing);
-                        Task.Delay(1000).Wait();
-                        await Bot.SendTextMessageAsync(update.Message?.From.Id, $"Привет! Я бот Papoy. Меня создал Роман Бирюков. \nДля получения списка всех команд введи /help.");
-                    }
-
-                    string text = update.Message.Text;
-                    var model = BotCommand.Parse(text);
-                    if (model != null)
-                    {
-                        foreach (var cmd in Commands)
-                        {
-                            if (cmd.Command == model.Command)
-                            {
-                                if (cmd.CountArgs == model.Args.Length)
-                                {
-                                    cmd.Execute?.Invoke(model, update);
-                                }
-                                else
-                                {
-                                    cmd.OnError?.Invoke(model, update);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        await Bot.SendChatActionAsync(update.Message.From.Id, ChatAction.Typing);
-                        Task.Delay(1000).Wait();
-                        await Bot.SendTextMessageAsync(update.Message.From.Id, "Это не команда.\nДля просмотра списка команд введи /help");
-                    }
-
-                    //}
-                    offset = update.Id + 1;
-                }
-                Task.Delay(500).Wait();
-            }
         }
 
         static async Task Test()
@@ -129,14 +63,29 @@ namespace TelegramBot
 
                 foreach (var update in updates)
                 {
+                    DateTime dateTimeMessage = update.Message.Date.ToUniversalTime();
+                    DateTime dateTimeNow = DateTime.Now.ToUniversalTime();
+
                     if (update.Message != null)
                     {
                         int senderId = update.Message.From.Id;
-                        var chatId = update.Message.Chat.Id;
+                        long chatId = update.Message.Chat.Id;
+                        int cmdCouter = 1;
+                        string text = update.Message?.Text;                        
 
-                        await Bot.SendChatActionAsync(chatId, ChatAction.Typing);
-                        Task.Delay(1000).Wait();
-                        await Bot.SendTextMessageAsync(chatId, $"Ваш Id: {senderId}\nChatId = {chatId}");
+                        foreach (var cmd in Commands)
+                        {
+                            if (cmd.Command == text)
+                            {
+                                cmd.Execute?.Invoke(update, chatId);
+                                break;
+                            }
+                            else if (Commands.Count == cmdCouter)
+                            {
+                                cmd.OnError?.Invoke(update, chatId);
+                            }
+                            cmdCouter++;
+                        }
                     }
                     offset = update.Id + 1;
                 }
