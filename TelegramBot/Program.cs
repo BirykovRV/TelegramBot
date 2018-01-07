@@ -62,7 +62,7 @@ namespace TelegramBot
                 var updates = await Bot.GetUpdatesAsync(offset ,100, 3, type);
 
                 foreach (var update in updates)
-                {                                        
+                {
                     if (update.Message != null)
                     {
                         int senderId = update.Message.From.Id;

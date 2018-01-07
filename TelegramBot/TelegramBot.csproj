@@ -48,8 +48,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppSettings.cs" />
+    <Compile Include="Bot.cs" />
     <Compile Include="BotCommand.cs" />
     <Compile Include="BotCommandModel.cs" />
+    <Compile Include="Command.cs" />
+    <Compile Include="HelloCommand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
