@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot;
+using Telegram.Bot.Types;
 
 namespace TelegramBot
 {
-    class Bot
+    class HelpCommand
     {
-        public string Name { get; set; } = "Papoy_bot";
-
-        public List<Command> commands;
+        
     }
 }
