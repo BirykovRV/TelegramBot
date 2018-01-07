@@ -9,15 +9,24 @@ namespace TelegramBot
 {
     class Bot
     {       
-        public TelegramBotClient bot;
-        public static List<Command> commands = new List<Command>();
+        private TelegramBotClient bot;
+
+        private static List<Command> commands = new List<Command>();
+
+        public static List<Command> GetCommands
+        {
+            get
+            {
+                return commands;
+            }
+        }
 
         public Bot()
         {
             bot = new TelegramBotClient(BotSettings.Key);
             commands.Add(new HelloCommand());
             commands.Add(new HelpCommand());
-        }
+        }        
 
         public async Task Run()
         {
