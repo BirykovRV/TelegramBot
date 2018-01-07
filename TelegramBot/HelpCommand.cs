@@ -8,8 +8,16 @@ using Telegram.Bot.Types;
 
 namespace TelegramBot
 {
-    class HelpCommand
+    class HelpCommand : Command
     {
-        
+        public override string Name { get; set; } = "/help";
+
+        public override async void Execute(Message message, TelegramBotClient client)
+        {
+            long chatId = message.Chat.Id;
+            int senderId = message.MessageId;
+
+            await client.SendTextMessageAsync(chatId, "Список всех команд:\n" + string.Join("\n", Bot.commands.Select(cmd => cmd.Name)), replyToMessageId: senderId);
+        }
     }
 }

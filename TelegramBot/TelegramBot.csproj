@@ -49,8 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bot.cs" />
-    <Compile Include="BotCommand.cs" />
-    <Compile Include="BotCommandModel.cs" />
+    <Compile Include="BotSettings.cs" />
+    <Compile Include="Command.cs" />
     <Compile Include="HelloCommand.cs" />
     <Compile Include="HelpCommand.cs" />
     <Compile Include="Program.cs" />
