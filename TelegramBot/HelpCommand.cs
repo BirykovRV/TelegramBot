@@ -10,8 +10,15 @@ namespace TelegramBot
 {
     class HelpCommand : ICommand
     {
+        /// <summary>
+        /// Имя команды
+        /// </summary>
         public string Name { get; set; } = "/help";
-
+        /// <summary>
+        /// Вызывает команду
+        /// </summary>
+        /// <param name="message">принимает сообщение</param>
+        /// <param name="client">Ссылка на экземпляр бота</param>
         public async void Execute(Message message, TelegramBotClient client)
         {
             long chatId = message.Chat.Id;

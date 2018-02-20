@@ -13,7 +13,9 @@ namespace TelegramBot
         {
             Bot bot = new Bot();
 
-            bot.Run().Wait();
+            Console.WriteLine("Бот запущен");
+
+            bot.RunAsync().Wait();            
                         
             Console.ReadKey();
         }

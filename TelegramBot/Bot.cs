@@ -8,11 +8,15 @@ using Telegram.Bot;
 namespace TelegramBot
 {
     class Bot
-    {       
+    {
         private TelegramBotClient bot;
-
+        /// <summary>
+        /// Создание списка команд для бота
+        /// </summary>
         private static List<ICommand> commands = new List<ICommand>();
-
+        /// <summary>
+        /// Получить список команд
+        /// </summary>
         public static List<ICommand> GetCommands
         {
             get
@@ -20,15 +24,20 @@ namespace TelegramBot
                 return commands;
             }
         }
-
+        /// <summary>
+        /// Создание бот-клиента, инициализация новых команд
+        /// </summary>
         public Bot()
         {
             bot = new TelegramBotClient(BotSettings.Key);
             commands.Add(new HelloCommand());
             commands.Add(new HelpCommand());
         }        
-
-        public async Task Run()
+        /// <summary>
+        /// Запуск бота
+        /// </summary>
+        /// <returns></returns>
+        public async Task RunAsync()
         {
             var offset = 1;
             while (true)
@@ -44,11 +53,6 @@ namespace TelegramBot
                             if (update.Message.Text != null && update.Message.Text.Contains(command.Name))
                             {
                                 command.Execute(update.Message, bot);
-                                break;
-                            }
-                            else
-                            {
-                                await bot.SendTextMessageAsync(update.Message.Chat.Id, $"Я такой команды не знаю(\nВведи /help чтобы знать, что я умею)");
                                 break;
                             }
                         }
