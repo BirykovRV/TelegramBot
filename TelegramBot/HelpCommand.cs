@@ -8,11 +8,11 @@ using Telegram.Bot.Types;
 
 namespace TelegramBot
 {
-    class HelpCommand : Command
+    class HelpCommand : ICommand
     {
-        public override string Name { get; set; } = "/help";
+        public string Name { get; set; } = "/help";
 
-        public override async void Execute(Message message, TelegramBotClient client)
+        public async void Execute(Message message, TelegramBotClient client)
         {
             long chatId = message.Chat.Id;
             int senderId = message.MessageId;

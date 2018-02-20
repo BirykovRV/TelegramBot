@@ -64,7 +64,7 @@
   <ItemGroup>
     <Compile Include="Bot.cs" />
     <Compile Include="BotSettings.cs" />
-    <Compile Include="Command.cs" />
+    <Compile Include="ICommand.cs" />
     <Compile Include="HelloCommand.cs" />
     <Compile Include="HelpCommand.cs" />
     <Compile Include="Program.cs" />

@@ -11,9 +11,9 @@ namespace TelegramBot
     {       
         private TelegramBotClient bot;
 
-        private static List<Command> commands = new List<Command>();
+        private static List<ICommand> commands = new List<ICommand>();
 
-        public static List<Command> GetCommands
+        public static List<ICommand> GetCommands
         {
             get
             {
@@ -44,6 +44,11 @@ namespace TelegramBot
                             if (update.Message.Text != null && update.Message.Text.Contains(command.Name))
                             {
                                 command.Execute(update.Message, bot);
+                                break;
+                            }
+                            else
+                            {
+                                await bot.SendTextMessageAsync(update.Message.Chat.Id, $"Я такой команды не знаю(\nВведи /help чтобы знать, что я умею)");
                                 break;
                             }
                         }

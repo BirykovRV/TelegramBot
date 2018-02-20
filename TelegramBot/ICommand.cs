@@ -8,10 +8,10 @@ using Telegram.Bot.Types;
 
 namespace TelegramBot
 {
-    abstract class Command
+    interface ICommand
     {
-        public abstract string Name { get; set; }
+        string Name { get; set; }
 
-        public abstract void Execute(Message message, TelegramBotClient client);
+        void Execute(Message message, TelegramBotClient client);
     }
 }

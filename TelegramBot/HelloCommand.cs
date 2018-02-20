@@ -3,11 +3,11 @@ using Telegram.Bot.Types;
 
 namespace TelegramBot
 {
-    class HelloCommand : Command
+    class HelloCommand : ICommand
     {
-        public override string Name { get; set; } = "/hi";
+        public string Name { get; set; } = "/hi";
 
-        public override async void Execute(Message message, TelegramBotClient client)
+        public async void Execute(Message message, TelegramBotClient client)
         {
             var chatId = message.Chat.Id;
             var messageId = message.MessageId;
