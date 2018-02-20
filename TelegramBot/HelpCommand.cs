@@ -22,9 +22,9 @@ namespace TelegramBot
         public async void Execute(Message message, TelegramBotClient client)
         {
             long chatId = message.Chat.Id;
-            int senderId = message.MessageId;
+            int messageId = message.MessageId;
 
-            await client.SendTextMessageAsync(chatId, "Список всех команд:\n" + string.Join("\n", Bot.GetCommands.Select(cmd => cmd.Name)), replyToMessageId: senderId);
+            await client.SendTextMessageAsync(chatId, "Список всех команд:\n" + string.Join("\n", Bot.GetCommands.Select(cmd => cmd.Name)));
         }
     }
 }
