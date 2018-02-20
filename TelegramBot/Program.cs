@@ -11,7 +11,6 @@ namespace TelegramBot
     {
         static void Main(string[] args)
         {
-
             Bot bot = new Bot();
 
             bot.Run().Wait();
