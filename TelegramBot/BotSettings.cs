@@ -10,6 +10,6 @@ namespace TelegramBot
     {
         public static string Name { get; set; } = "Papoy_bot";
 
-        public static string Key { get; set; } = "533322105:AAHNbYcPCKNVWFSDvojXtrLmz_UYL6dkoFs";
+        public static string Key { get; set; } = "";
     }
 }
