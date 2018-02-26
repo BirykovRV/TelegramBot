@@ -30,34 +30,50 @@ namespace TelegramBot
         public Bot()
         {
             bot = new TelegramBotClient(BotSettings.Key);
+            bot.StartReceiving();
+            bot.OnMessage += Bot_OnMessage;
+            bot.OnCallbackQuery += Bot_OnCallbackQuery;
             commands.Add(new HelloCommand());
             commands.Add(new HelpCommand());
-        }        
-        /// <summary>
-        /// Запуск бота
-        /// </summary>
-        /// <returns></returns>
-        public async Task RunAsync()
-        {
-            var offset = 1;
-            while (true)
-            {
-                var updates = await bot.GetUpdatesAsync(offset);
+            commands.Add(new InlineButtonCommand());
+        }
 
-                foreach (var update in updates)
+        private async void Bot_OnCallbackQuery(object sender, Telegram.Bot.Args.CallbackQueryEventArgs e)
+        {
+            var cbid = e.CallbackQuery.Id;
+            var user = e.CallbackQuery.From.Username;
+            var cid = e.CallbackQuery.Message.Chat.Id;
+            var data = e.CallbackQuery.Data;
+            var text = e.CallbackQuery.Message.Text;
+
+            if (!string.IsNullOrEmpty(data))
+            {
+                switch (data)
                 {
-                    if (update.Message != null)
-                    {
-                        foreach (var command in commands)
-                        {
-                            if (update.Message.Text != null && update.Message.Text.Contains(command.Name))
-                            {
-                                command.Execute(update.Message, bot);
-                                break;
-                            }
-                        }
-                    }
-                    offset = update.Id + 1;
+                    case "yes":
+                        await bot.EditMessageTextAsync(cid, e.CallbackQuery.Message.MessageId, "Boo");
+                        break;
+                    case "no":
+                        await bot.EditMessageTextAsync(cid, e.CallbackQuery.Message.MessageId, $"{data} is pressed");
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void Bot_OnMessage(object sender, Telegram.Bot.Args.MessageEventArgs e)
+        {
+            var cid = e.Message.Chat.Id;
+            var txt = e.Message.Text;
+            var user = e.Message.From.FirstName + " " + e.Message.From.LastName;
+            Console.WriteLine($"{e.Message.From.Id} - {user} - {txt}");
+            foreach (var cmd in commands)
+            {
+                if (txt.Contains(cmd.Name))
+                {
+                    cmd.Execute(e.Message, bot);                    
+                    break;
                 }
             }
         }

@@ -67,6 +67,7 @@
     <Compile Include="ICommand.cs" />
     <Compile Include="HelloCommand.cs" />
     <Compile Include="HelpCommand.cs" />
+    <Compile Include="InlineButtonCommand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
