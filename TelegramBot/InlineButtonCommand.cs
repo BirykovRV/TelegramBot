@@ -22,11 +22,19 @@ namespace TelegramBot
                 chatId: cid,
                 text: "Вы нажали Да",
                 replyMarkup: new InlineKeyboardMarkup(
-                    new InlineKeyboardButton[]
-                    {
-                        new InlineKeyboardCallbackButton("Да", "yes"),
-                        new InlineKeyboardCallbackButton("Нет", "no")
-                    }
+                    new InlineKeyboardButton[][]
+                        {
+                            new[]
+                            {
+                                new InlineKeyboardCallbackButton($"Да", "yes"),
+                                new InlineKeyboardCallbackButton("Нет", "no")
+                            },
+                            new[]
+                            {
+                                new InlineKeyboardCallbackButton("Да", "yes"),
+                                new InlineKeyboardCallbackButton("Нет", "no")
+                            }
+                        }
                     )
                 );
         }

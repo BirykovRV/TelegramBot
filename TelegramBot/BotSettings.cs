@@ -6,10 +6,10 @@ namespace TelegramBot
         /// <summary>
         /// Получить или установить имя бота
         /// </summary>
-        public static string Name { get; set; } = "Papoy_bot";
+        public static string Name { get; set; } = "Poll";
         /// <summary>
         /// Получить или установить токен
         /// </summary>
-        public static string Key { get; set; } = "";
+        public static string Key { get; set; } = "532770962:AAETgIkRwarI3flcMT3KFqkiu0m1UhtaSQo";
     }
 }
