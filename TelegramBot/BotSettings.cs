@@ -10,6 +10,6 @@ namespace TelegramBot
         /// <summary>
         /// Получить или установить токен
         /// </summary>
-        public static string Key { get; set; } = "532770962:AAETgIkRwarI3flcMT3KFqkiu0m1UhtaSQo";
+        public static string Key { get; set; } = "";
     }
 }
